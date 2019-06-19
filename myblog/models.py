@@ -13,6 +13,16 @@ class Post(models.Model):
     def __str__(self):
         return self.title
 
+class Comment(models.Model):
+
+    title = models.CharField(max_length=100)
+    text = models.CharField(max_length=255)
+    notes = models.CharField(max_length=255)
+    posts = models.ManyToManyField(Post, blank=True, related_name='comments')
+
+    def __str__(self):
+        return self.title
+
 class Category(models.Model):
     name = models.CharField(max_length=128)
     description = models.TextField(blank=True)

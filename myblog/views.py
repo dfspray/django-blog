@@ -5,6 +5,10 @@ from myblog.models import Post
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
 from myblog.serializers import UserSerializer, GroupSerializer
+from django.shortcuts import render, redirect
+from django import forms
+from django.utils import timezone
+from myblog.forms import MyCommentForm
 
 def stub_view(request, *args, **kwargs):
     body = "Stub View\n\n"
@@ -32,6 +36,18 @@ def detail_view(request, post_id):
         raise Http404
     context = {'post': post}
     return render(request, 'detail.html', context)
+
+def add_model(request):
+    if request.method == "POST":
+        form = MyCommentForm(request.POST)
+        if form.is_valid():
+            model_instance = form.save(commit=False)
+            model_instance.timestamp = timezone.now()
+            model_instance.save()
+            return redirect('/')
+    else:
+        form = MyCommentForm()
+        return render(request, "my_template.html", {'form': form})
 
 class UserViewSet(viewsets.ModelViewSet):
     """
